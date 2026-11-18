@@ -1,0 +1,335 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | AcxiomCRM{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h2 class="fw-bold">Dashboard</h2>
+    <p class="text-muted">Your CRM overview at a glance.</p>
+</div>
+
+<!-- KPI Cards -->
+<div class="row g-3 mb-4">
+
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <div class="text-muted">Customers</div>
+                <h3 class="fw-bold text-primary">{{ total_customers }}</h3>
+                <a href="/customers/" class="small">View customers</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <div class="text-muted">Total Leads</div>
+                <h3 class="fw-bold text-info">{{ total_leads }}</h3>
+                <a href="/leads/" class="small">View leads</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <div class="text-muted">Open Leads</div>
+                <h3 class="fw-bold text-warning">{{ open_leads }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <div class="text-muted">Opportunities</div>
+                <h3 class="fw-bold text-primary">{{ total_opportunities }}</h3>
+                <a href="/opportunities/" class="small">View pipeline</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <div class="text-muted">Won Opportunities</div>
+                <h3 class="fw-bold text-success">{{ won_opportunities }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <div class="text-muted">Active Pipeline</div>
+                <h3 class="fw-bold">₹{{ active_pipeline|floatformat:0 }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <div class="text-muted">Weighted Pipeline</div>
+                <h3 class="fw-bold text-success">₹{{ weighted_pipeline|floatformat:0 }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <div class="text-muted">Won Sales Value</div>
+                <h3 class="fw-bold text-success">₹{{ won_sales|floatformat:0 }}</h3>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Lower Section -->
+<div class="row g-3">
+
+    <!-- Pipeline Stage Summary -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">Opportunity Pipeline</h5>
+
+                {% for item in opportunities_by_stage %}
+                    <div class="d-flex justify-content-between border-bottom py-2">
+                        <span>{{ item.label }}</span>
+                        <span class="badge bg-primary">{{ item.count }}</span>
+                    </div>
+                {% endfor %}
+
+                <a href="/opportunities/" class="btn btn-outline-primary btn-sm mt-3">
+                    Manage Opportunities
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Customers -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">Recent Customers</h5>
+
+                {% for customer in recent_customers %}
+                    <div class="border-bottom py-2">
+                        <div class="fw-semibold">{{ customer.customer_name }}</div>
+                        <small class="text-muted">{{ customer.company_name }}</small>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No customers yet.</p>
+                {% endfor %}
+
+                <a href="/customers/" class="btn btn-outline-primary btn-sm mt-3">
+                    View All Customers
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Leads -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">Recent Leads</h5>
+
+                {% for lead in recent_leads %}
+                    <div class="border-bottom py-2">
+                        <div class="fw-semibold">{{ lead.lead_name }}</div>
+                        <small class="text-muted">
+                            {{ lead.company_name }} · {{ lead.status }}
+                        </small>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No leads yet.</p>
+                {% endfor %}
+
+                <a href="/leads/" class="btn btn-outline-primary btn-sm mt-3">
+                    View All Leads
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<!-- Charts Section -->
+<div class="row g-3 mb-4">
+
+    <!-- Lead Status Chart -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">Lead Status</h5>
+                <canvas id="leadStatusChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Opportunity Pipeline Chart -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">Opportunity Pipeline</h5>
+                <canvas id="opportunityStageChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monthly Sales Chart -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">Monthly Won Sales</h5>
+                <canvas id="monthlySalesChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Safely pass Django data to JavaScript -->
+{{ lead_status_chart|json_script:"lead-status-data" }}
+{{ opportunity_stage_chart|json_script:"opportunity-stage-data" }}
+{{ monthly_sales_chart|json_script:"monthly-sales-data" }}
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const leadData = JSON.parse(
+        document.getElementById('lead-status-data').textContent
+    );
+
+    const stageData = JSON.parse(
+        document.getElementById('opportunity-stage-data').textContent
+    );
+
+    const salesData = JSON.parse(
+        document.getElementById('monthly-sales-data').textContent
+    );
+
+    // 1. Lead Status - Doughnut Chart
+    new Chart(document.getElementById('leadStatusChart'), {
+        type: 'doughnut',
+        data: {
+            labels: leadData.map(item => item.label),
+            datasets: [{
+                data: leadData.map(item => item.count),
+                backgroundColor: [
+                    '#0d6efd',
+                    '#0dcaf0',
+                    '#ffc107',
+                    '#6f42c1',
+                    '#198754',
+                    '#dc3545'
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // 2. Opportunity Pipeline - Bar Chart
+    new Chart(document.getElementById('opportunityStageChart'), {
+        type: 'bar',
+        data: {
+            labels: stageData.map(item => item.label),
+            datasets: [{
+                label: 'Opportunities',
+                data: stageData.map(item => item.count),
+                backgroundColor: '#0d6efd',
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    });
+
+    // 3. Monthly Won Sales - Line Chart
+    new Chart(document.getElementById('monthlySalesChart'), {
+        type: 'line',
+        data: {
+            labels: salesData.map(item => item.label),
+            datasets: [{
+                label: 'Won Sales (₹)',
+                data: salesData.map(item => item.amount),
+                borderColor: '#198754',
+                backgroundColor: 'rgba(25, 135, 84, 0.15)',
+                fill: true,
+                tension: 0.3,
+                pointRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+});
+</script>
+
+
+
+
+<!-- Quick Actions -->
+<div class="card border-0 shadow-sm mt-4">
+    <div class="card-body">
+        <h5 class="fw-bold mb-3">Quick Actions</h5>
+
+        <div class="d-flex flex-wrap gap-2">
+            <a href="/customers/create/" class="btn btn-primary">+ Customer</a>
+            <a href="/leads/create/" class="btn btn-info">+ Lead</a>
+            <a href="/followups/create/" class="btn btn-warning">+ Follow-up</a>
+            <a href="/opportunities/create/" class="btn btn-success">+ Opportunity</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Database
+db.sqlite3
+db.sqlite3-journal
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Static and media
+staticfiles/
+media/
+
+# Logs
+*.log
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,58 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Login | AcxiomCRM{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5 col-lg-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+
+                <h3 class="text-center mb-2">AcxiomCRM</h3>
+                <p class="text-center text-muted mb-4">
+                    Sign in to your account
+                </p>
+
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        Invalid username or password. Please try again.
+                    </div>
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label">
+                            Username
+                        </label>
+                        <input type="text"
+                               name="username"
+                               id="id_username"
+                               class="form-control"
+                               required
+                               autofocus>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_password" class="form-label">
+                            Password
+                        </label>
+                        <input type="password"
+                               name="password"
+                               id="id_password"
+                               class="form-control"
+                               required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        Login
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
