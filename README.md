@@ -7,7 +7,7 @@
 Use the following credentials to explore the CRM:
 
 - **Username:** `interviewer`
-- **Password:** `YOUR_DEMO_PASSWORD`
+- **Password:** `Strong@09`
 
 **Role:** Manager
 
