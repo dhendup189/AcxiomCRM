@@ -1,6 +1,16 @@
-# AcxiomCRM
+## Live Demo
 
-**Live Demo:** https://acxiomcrm-jkds.onrender.com
+**Website:** https://acxiomcrm-jkds.onrender.com
 
-A Django-based Customer Relationship Management (CRM) application.
+### Demo Login Credentials
 
+Use the following credentials to explore the CRM:
+
+- **Username:** `interviewer`
+- **Password:** `YOUR_DEMO_PASSWORD`
+
+**Role:** Manager
+
+The demo account provides access to the main CRM modules, including Dashboard, Customers, Leads, Follow-ups, Opportunities and Reports.
+
+Please use the demo account to explore the application's features.
